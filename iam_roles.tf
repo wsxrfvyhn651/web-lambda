@@ -45,6 +45,18 @@ resource "aws_iam_policy" "vpc_minimal_policy" {
           "ec2:CreateTags"
         ]
         Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${data.aws_iam_role.github_role.name}"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:CreatePolicy",
+          "iam:DeletePolicy",
+          "iam:GetPolicy",
+          "iam:GetPolicyVersion",
+          "iam:ListPolicyVersions"
+        ]
+
+        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/github-actions-vpc-minimal"
       }
     ]
   })
