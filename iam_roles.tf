@@ -1,5 +1,27 @@
 data "aws_iam_role" "github_role" {
-  name = "GithubActionsWorkflowRole" 
+  name = "GithubActionsWorkflowRole"
+}
+
+
+# Lấy thông tin tài khoản AWS hiện tại một cách tự động
+data "aws_caller_identity" "current" {}
+
+resource "aws_iam_role_policy" "github_actions_iam_policy" {
+  name = "github-actions-iam-permissions"
+  role = data.aws_iam_role.github_role.id
+
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = "iam:GetRole"
+        # Terraform tự điền Account ID ở đây khi chạy 
+        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/GithubActionsWorkflowRole"
+      }
+    ]
+  })
 }
 
 resource "aws_iam_policy" "vpc_minimal_policy" {
@@ -12,6 +34,7 @@ resource "aws_iam_policy" "vpc_minimal_policy" {
       {
         Effect = "Allow"
         Action = [
+          "iam:GetRole",
           "ec2:CreateVpc",
           "ec2:DeleteVpc",
           "ec2:DescribeVpcs",
@@ -21,7 +44,7 @@ resource "aws_iam_policy" "vpc_minimal_policy" {
           "ec2:DescribeSubnets",
           "ec2:CreateTags"
         ]
-        Resource = "*"
+        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${data.aws_iam_role.github_role.name}"
       }
     ]
   })
