@@ -45,8 +45,8 @@ resource "aws_iam_role_policy" "github_actions_iam_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect   = "Allow"
-        Action   = "iam:GetRole"
+        Effect = "Allow"
+        Action = "iam:GetRole"
         # Terraform tự điền Account ID ở đây khi chạy 
         Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/GithubActionsWorkflowRole"
       }
