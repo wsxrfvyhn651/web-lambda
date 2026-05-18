@@ -1,5 +1,5 @@
 data "aws_iam_role" "github_role" {
-  name = "GithubActionsWorkflowRole" 
+  name = "GithubActionsWorkflowRole"
 }
 
 resource "aws_iam_policy" "vpc_minimal_policy" {
