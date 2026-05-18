@@ -12,6 +12,7 @@ resource "aws_iam_policy" "vpc_minimal_policy" {
       {
         Effect = "Allow"
         Action = [
+          "iam:GetRole",
           "ec2:CreateVpc",
           "ec2:DeleteVpc",
           "ec2:DescribeVpcs",
