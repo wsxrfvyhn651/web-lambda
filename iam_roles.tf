@@ -44,7 +44,7 @@ resource "aws_iam_policy" "vpc_minimal_policy" {
           "ec2:DescribeSubnets",
           "ec2:CreateTags"
         ]
-        Resource = "*"
+        Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${data.aws_iam_role.github_role.name}"
       }
     ]
   })
