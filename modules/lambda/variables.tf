@@ -23,3 +23,8 @@ variable "security_group_ids" {
   type        = list(string)
   description = "Danh sách Security Group IDs áp dụng cho Lambda"
 }
+
+variable "current_account" {
+  type        = string
+  description = "account id"
+}

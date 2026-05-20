@@ -79,7 +79,7 @@ data "aws_iam_policy_document" "github_access_lambda" {
       "iam:CreateRole"
     ]
     resources = [
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/iam-role-${each.key}"
+      "arn:aws:iam::${var.current_account}:role/iam-role-${each.key}"
     ]
   }
 }
