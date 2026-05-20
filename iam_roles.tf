@@ -73,7 +73,7 @@ data "aws_iam_policy_document" "github_access" {
     actions = [
       "lambda:CreateFunction", "lambda:DeleteFunction", "lambda:GetFunction",
       "lambda:UpdateFunctionCode", "lambda:UpdateFunctionConfiguration",
-      "iam:PassRole", "apigateway:*", "ec2:DescribeManagedPrefixLists" # Cần thêm quyền APIGW
+      "iam:PassRole", "apigateway:*" # Cần thêm quyền APIGW
     ]
     resources = ["*"]
   }
@@ -90,3 +90,12 @@ resource "aws_iam_role_policy_attachment" "attach_to_github" {
   policy_arn = aws_iam_policy.github_policy.arn
 }
 
+data "aws_iam_policy_document" "github_access_dynamo" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "dynamodb:CreateTable"
+    ]
+    resources = module.dynamo_system.table_arn
+  }
+}
