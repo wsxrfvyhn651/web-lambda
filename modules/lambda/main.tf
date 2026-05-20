@@ -70,6 +70,31 @@ locals {
   }
 }
 
+data "aws_iam_policy_document" "github_access_lambda" {
+  for_each = local.functions
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "iam:CreateRole"
+    ]
+    resources = [
+      "arn:aws:iam::${var.current_account}:role/iam-role-${each.key}"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "github_lambda_policy" {
+  name        = "GithubActionsPolicy"
+  description = "Quyền cho Github Actions"
+  policy      = data.aws_iam_policy_document.github_access_lambda.json
+}
+
+resource "aws_iam_role_policy_attachment" "attach_lambda_to_github" {
+  role       = "GithubActionsWorkflowRole"
+  policy_arn = aws_iam_policy.github_lambda_policy.arn
+}
+
 # Tạo IAM Role riêng biệt cho từng Function
 resource "aws_iam_role" "lambda_roles" {
   for_each           = local.functions

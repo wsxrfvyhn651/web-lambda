@@ -27,7 +27,7 @@ resource "aws_iam_role_policy" "github_actions_iam_policy" {
           "iam:DeletePolicy",
           "iam:GetPolicy",
           "iam:GetPolicyVersion",
-          "iam:ListPolicyVersions"
+          "iam:ListPolicyVersions",
         ]
 
         Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/github-actions-vpc-minimal"
@@ -73,7 +73,7 @@ data "aws_iam_policy_document" "github_access" {
     actions = [
       "lambda:CreateFunction", "lambda:DeleteFunction", "lambda:GetFunction",
       "lambda:UpdateFunctionCode", "lambda:UpdateFunctionConfiguration",
-      "iam:PassRole", "apigateway:*", "ec2:DescribeManagedPrefixLists" # Cần thêm quyền APIGW
+      "iam:PassRole", "apigateway:*" # Cần thêm quyền APIGW
     ]
     resources = ["*"]
   }
@@ -86,6 +86,21 @@ resource "aws_iam_policy" "github_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "attach_to_github" {
+  role       = "GithubActionsWorkflowRole"
+  policy_arn = aws_iam_policy.github_policy.arn
+}
+
+data "aws_iam_policy_document" "github_access_dynamo" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "dynamodb:CreateTable"
+    ]
+    resources = module.dynamo_system.table_arn
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "attach_dynamo_to_github" {
   role       = "GithubActionsWorkflowRole"
   policy_arn = aws_iam_policy.github_policy.arn
 }
