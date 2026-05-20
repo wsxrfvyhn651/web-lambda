@@ -12,7 +12,7 @@ module "my_task_api" {
   subnet_ids         = [aws_subnet.subnet_1.id, aws_subnet.subnet_2.id]
   security_group_ids = [aws_security_group.lambda_sg.id]
 
-  current_account = data.aws_caller_identity.current
+  current_account = data.aws_caller_identity.current.account_id
 }
 
 output "endpoint_url" {
