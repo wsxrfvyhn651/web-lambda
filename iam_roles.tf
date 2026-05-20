@@ -66,3 +66,27 @@ resource "aws_iam_role_policy_attachment" "attach_minimal" {
   role       = data.aws_iam_role.github_role.name
   policy_arn = aws_iam_policy.vpc_minimal_policy.arn
 }
+
+data "aws_iam_policy_document" "github_access" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "lambda:CreateFunction", "lambda:DeleteFunction", "lambda:GetFunction",
+      "lambda:UpdateFunctionCode", "lambda:UpdateFunctionConfiguration",
+      "iam:PassRole", "apigateway:*" # Cần thêm quyền APIGW
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "github_policy" {
+  name        = "GithubActionsPolicy"
+  description = "Quyền cho Github Actions"
+  policy      = data.aws_iam_policy_document.github_access.json
+}
+
+resource "aws_iam_role_policy_attachment" "attach_to_github" {
+  role       = "GithubActionsWorkflowRole"
+  policy_arn = aws_iam_policy.github_policy.arn
+}
+
