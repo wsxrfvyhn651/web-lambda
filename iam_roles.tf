@@ -73,7 +73,7 @@ data "aws_iam_policy_document" "github_access" {
     actions = [
       "lambda:CreateFunction", "lambda:DeleteFunction", "lambda:GetFunction",
       "lambda:UpdateFunctionCode", "lambda:UpdateFunctionConfiguration",
-      "iam:PassRole", "apigateway:*" # Cần thêm quyền APIGW
+      "iam:PassRole", "apigateway:*", "ec2:DescribeManagedPrefixLists" # Cần thêm quyền APIGW
     ]
     resources = ["*"]
   }
